@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.study.pengxin.dao.CommonMapper" >
+	<!-- 开启二级缓存 
+	<cache></cache>
+	<cache-ref></cache-ref>-->
+	
+	<resultMap id="AreaResultMap" type="com.study.pengxin.bean.ConsultConfigArea" >
+		<result column="AREACODE" property="areaCode" jdbcType="VARCHAR" />
+		<result column="AREANAME" property="areaName" jdbcType="VARCHAR"/>
+		<result column="STATE" property="state"/>
+	</resultMap>
+	
+	<resultMap id="AreaResultMap2" type="com.study.pengxin.bean.ConsultConfigArea" >
+		<result column="AREACODE" property="areaCode" jdbcType="VARCHAR" />
+		<result column="AREANAME" property="areaName" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<select id="qryArea" parameterType="java.util.Map" resultMap="AreaResultMap">
+		select * from consult_configarea
+	</select>
+	
+	<insert id="saveArea" parameterType="com.study.pengxin.bean.ConsultConfigArea">
+	insert into consult_configarea (AREACODE, AREANAME, STATE)
+		values (#{areaCode,jdbcType=VARCHAR}, #{areaName,jdbcType=VARCHAR},#{state,jdbcType=VARCHAR})
+	</insert>
+	
+	<delete id="deleteAreaAll">
+		
+		delete from consult_configarea
+		
+	</delete>
+	
+	<delete id="deleteArea" parameterType="com.study.pengxin.bean.ConsultConfigArea">
+		
+		delete from consult_configarea where areaCode in 
+		<foreach item="item" index="index" collection="areaCodes" open="(" separator="," close=")">
+				#{item}
+		</foreach>
+		
+	</delete>
+	<update id="updateArea"  parameterType="com.study.pengxin.bean.ConsultConfigArea">
+		update consult_configarea 
+		<set>
+			<if test="areaCode != null" >
+				areaCode = #{areaCode,jdbcType=VARCHAR},
+			</if>
+			<if test="areaName != null" >
+				areaName = #{areaName,jdbcType=VARCHAR},
+			</if>
+			<if test="state != null" >
+				state = #{state},
+			</if>
+		</set> 
+		where areaCode = #{areaCode,jdbcType=VARCHAR}
+	</update>
+	<select id="queryAreaByAreaCode" parameterType="java.util.Map" resultMap="AreaResultMap">
+  	select * from consult_configarea 
+		<choose>  
+			<when test="areaCode=='101'">  
+                where areaName= '测试1'
+			</when>  
+			<when test="areaCode=='102'">  
+                where areaName= '测试2' 
+			</when>  
+			<otherwise>  
+                where areaName= '测试1' 
+			</otherwise>  
+              
+		</choose>  
+	</select>
+	
+	
+
+</mapper>
